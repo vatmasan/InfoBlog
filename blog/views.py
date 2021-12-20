@@ -19,11 +19,11 @@ from blog.models import Category, Post, Comment
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        all_posts = Post.objects.all()
+        all_posts = Post.objects.order_by("-id")
         featured_posts = Post.objects.filter(featured=True)[0:3]
         latest_posts = Post.objects.order_by("-timestamp")[0:3]
         categorys = Category.objects.all()
-        paginator = Paginator(all_posts, 4)
+        paginator = Paginator(all_posts, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context = {"all_posts": all_posts, 
