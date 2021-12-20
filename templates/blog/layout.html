@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="all,follow" />
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static 'blog/vendor/bootstrap/css/bootstrap.min.css' %}" />
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static 'blog/vendor/font-awesome/css/font-awesome.min.css' %}" />
+    <!-- Custom icon font-->
+    <link rel="stylesheet" href="{% static 'blog/css/fontastic.css' %}" />
+    <!-- Google fonts - Open Sans-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" />
+    <!-- Fancybox-->
+    <link rel="stylesheet" href="{% static 'blog/vendor/@fancyapps/fancybox/jquery.fancybox.min.css' %}" />
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'blog/css/style.default.css' %}" id="theme-stylesheet" />
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'blog/css/custom.css' %}" />
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'blog/img/favicon.ico' %}" />
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script
+		><![endif]-->
+
+    <title>{% block title %} InfoBlog {% endblock title %}</title>
+</head>
+
+<body>
+    <!-- Main Navbar-->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/"><img src="{% static 'blog/img/infoblog.png' %}" alt="logo"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Categorias
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% for category in categorys %}
+                            <a class="dropdown-item" href="{{ category }}">{{ category }}</a>
+                            <div class="dropdown-divider"></div>
+                            {% endfor %}                            
+                        </div>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    {% if object.author.user == user.name %}
+                    {% for group in user.groups.all %}
+                    {% if group.name == "Writer" or group.name == "Admin" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post_create' %}">Crear Entrada</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts_update' %}">Perfil</a>
+                    </li>
+                    {% endif %}
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">({{ user.get_username }}) Cerrar cuenta</a>
+                    </li>
+
+                    {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts_register' %}">Registrarse</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+                    </li>
+
+                    {% endif %}
+                    </ul>
+
+                {% block searchs %}
+                <form method="get" action="{% url 'search' %}" class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="¿Qué buscar?" aria-label="Buscar" name="q"
+                        id="search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+                {% endblock searchs %}
+            </div>
+        </nav>
+    </header>
+
+    {% block content %} {% endblock content %}
+    <!-- Page Footer -->
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row">
+          <div class="col-12 col-md">
+            <img class="mb-2" src="{% static 'blog/img/infoblog-black.png' %}" alt="" width="130" height="30">
+            <small class="d-block mb-3 text-muted">© 2021</small>
+          </div>
+          <div class="col-6 col-md">
+            <h5>FAQ</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Registrarse</a></li>
+              <li><a class="text-muted" href="#">Ingresar</a></li>
+              <li><a class="text-muted" href="#">Comentar</a></li>
+              <li><a class="text-muted" href="#">¿Es autor?</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Recursos</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#" target="_blanck">Plantilla</a></li>
+              <li><a class="text-muted" href="#">Fotos</a></li>
+              <li><a class="text-muted" href="#">Otras Webs</a></li>
+              <li><a class="text-muted" href="#">Relacionados</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Nosotros</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Equipo</a></li>
+              <li><a class="text-muted" href="#">Privacidad</a></li>
+              <li><a class="text-muted" href="#">Terminos</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- JavaScript files-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+    <script src="{% static 'blog/vendor/jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static 'blog/vendor/@fancyapps/fancybox/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'blog/js/front.js' %}"></script>
+    {% block javascript %}{% endblock javascript %}
+</body>
+
+</html>

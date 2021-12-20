@@ -1,0 +1,19 @@
+{% extends '../blog/layout.html' %}
+{% load static crispy_forms_tags %}
+{% block content %}
+<div class="login-form">
+    <div class="jumbotron">
+        <h1 class="text-center">Ingresar a tu cuenta</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" class="btn btn-block btn-primary" value="Enviar">
+        </form>
+        <div class="pt-5">
+            <span><a href="{% url 'accounts_register' %}">Crear cuenta nueva</a></span>
+            <br>
+            <span><a href="{% url 'password_reset' %}">Olvide mi contraseña</a></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends './layout.html' %}
+{% load static %}
+{% block content %}
+<!-- Presentacion -->
+<section>>
+  <div class="jumbotron m-3" style="background: url({% static 'blog/img/intro.png' %}); background-size: cover; background-position: center center">
+      <h1 class="jumbotron-heading"><span id="typed"></span></h1>
+      <h4>Objetivos de Desarrollo Sostenible (ODS)</h4>
+      <p>¿Por dónde empezar?</p>
+      <a class="btn btn-primary btn-lg" href="https://www.argentina.gob.ar/politicassociales/ods/institucional" target="_blank" role="button">Leer más</a>
+  </div>
+</section>
+<!-- Post -->
+<section>
+  <div class="container">
+    <div class="row">
+      <!-- Latest Posts -->
+      <main class="posts-listing col-lg-8">
+        <div class="container">
+          <div class="row">
+            <!-- post -->
+            {% for post in page_obj %}
+            {% if post.featured or post.author == user.author %}
+            <div class="post col-xl-6">
+              <div class="post-thumbnail"><a href="{{ post.get_absolute_url }}"><img src="{{ post.thumbnail.url }}"
+                    alt="..." class="img-fluid"></a></div>
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                  <div class="category">
+                    {% for category in post.category.all %}
+                    <a href="#">{{ category }}</a>
+                    {% endfor %}
+                  </div>
+                </div><a href="{{ post.get_absolute_url }}">
+                  <h3 class="h4">{{ post.title }}</h3>
+                  {% if post.featured == False %}
+                  <div> BORRADOR - PRESIONE PARA PUBLICAR </div>
+                  {% endif %}
+                </a>
+                <p class="text-muted">{{ post.overview|linebreaks|truncatewords:50 }}</p>
+                <footer class="post-footer d-flex align-items-center"><a href="#"
+                    class="author d-flex align-items-center flex-wrap">
+                    <div class="avatar"><img src="{{ post.author.picture.url }}" alt="..." class="img-fluid"></div>
+                    <div class="title"><span>{{ post.author }}</span></div>
+                  </a>
+                  <div class="date"><i class="icon-clock"></i>{{ post.timestamp|timesince }}</div>
+                  <div class="comments meta-last"><i class="icon-comment"></i>{{ post.comment.count }}</div>
+                </footer>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <!-- Paginas -->
+          <nav aria-label="Page navigation">
+            <ul class="pagination pagination-template d-flex justify-content-center">
+              {% if page_obj.has_previous %}
+              <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link"> <i
+                    class="fa fa-angle-left"></i></a></li>
+              {% endif %}
+              <li class="page-item"><a href="?page={{ page_obj.number }}"
+                  class="page-link active">{{ page_obj.number }}</a>
+              </li>
+              {% if page_obj.has_next %}
+              <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"> <i
+                    class="fa fa-angle-right"></i></a></li>
+              {% endif %}
+            </ul>
+          </nav>
+  
+        </div>
+      </main>
+      <aside class="col-lg-4">
+        <!-- Barra buscar-->
+        <div class="widget search">
+          <header>
+            <h3 class="h6">Buscar en el Blog</h3>
+          </header>
+          <form action="{% url 'search' %}" class="search-form">
+            <div class="form-group">
+              <input type="search" placeholder="Buscar" name="q">
+              <button type="submit" class="submit"><i class="icon-search"></i></button>
+            </div>
+          </form>
+        </div>
+        <!-- Barra ultimas entradas -->
+        <div class="widget latest-posts">
+          <header>
+            <h3 class="h6">Ultimas entradas</h3>
+          </header>
+          <div class="blog-posts">
+            {% for post in latest_posts %}
+            {% if post.featured or post.author == user.author %}
+            <a href="#">
+              <div class="item d-flex align-items-center">
+                <div class="image"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></div>
+                <div class="title"><strong>{{ post.title }}</strong>
+                  {% if post.featured == False %}
+                  <div> BORRADOR - PRESIONE PARA PUBLICAR </div>
+                  {% endif %}
+                  <div class="d-flex align-items-center">
+                    <div class="views"><i class="icon-eye"></i> 0 </div>
+                    <div class="comments"><i class="icon-comment"></i>{{ post.comments.count }}</div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <!-- Barra Categorias -->
+          <div class="widget categories">
+            <header>
+              <h3 class="h6">Categorias</h3>
+            </header>
+            {% for category in categorys %}
+            <div class="item d-flex justify-content-between">
+              <a href="#">{{ category }}</a><span>{{ category.post.count }}</span>
+            </div>
+            {% endfor %}
+          </div>
+      </aside>
+    </div>
+  </div>
+  </section>
+
+<!-- Ultimos Post -->
+<section class="latest-posts">
+  <div class="container">
+    <header>
+      <h2>Ultimas entradas en el blog</h2>
+    </header>
+    <div class="row">
+      {% for post in latest_posts %}
+      {% if post.featured or post.author == user.author %}
+      <div class="post col-md-4">
+        {% if post.thumbnail.url %}        
+        <div class="post-thumbnail"><a href="{{ post.get_absolute_url }}"><img src="{{ post.thumbnail.url }}" class="img-fluid"></a>
+        </div>
+        {% else %}
+        <div class="post-thumbnail"><a href="{{ post.get_absolute_url }}"><img src="media/thumbnail/default.jpg" class="img-fluid"></a>
+        </div>
+        {% endif %}        
+        <div class="post-details">
+          <div class="post-meta d-flex justify-content-between">
+            <div class="date">{{ post.timestamp }}</div>
+            <div class="category">{% for category in post.category.all %}
+              <a href="#">{{ category }}</a>
+              {% endfor %}</div>
+          </div><a href="{{ post.get_absolute_url }}">
+            <h3 class="h4">{{ post.title }}</h3>
+            {% if post.featured == False %}
+            <div> BORRADOR - PRESIONE PARA PUBLICAR </div>
+            {% endif %}
+          </a>
+          <p class="text-muted">{{ post.overview|linebreaks|truncatewords:50 }}</p>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock content %}
